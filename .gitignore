@@ -1,0 +1,6 @@
+### PyCharm IDE ###
+.idea/
+
+### macOS ###
+.DS_Store
+
