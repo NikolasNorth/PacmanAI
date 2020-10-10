@@ -138,7 +138,7 @@ def uniformCostSearch(problem):
             if child not in expanded_states:
                 fringe.push(
                     (child, actions + [action]),
-                    problem.getCostOfActions(actions)
+                    problem.getCostOfActions(actions + [action])
                 )
                 expanded_states.add(child)
 
