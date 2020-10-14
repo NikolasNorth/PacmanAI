@@ -273,7 +273,7 @@ class CornersProblem(search.SearchProblem):
     You must select a suitable state space and successor function
     """
 
-    def __init__(self, startingGameState):
+    def __init__(self, startingGameState, cost_fn=lambda x: 1):
         """
         Stores the walls, pacman's starting position and corners.
         """
@@ -288,6 +288,8 @@ class CornersProblem(search.SearchProblem):
         # Please add any code here which you would like to use
         # in initializing the problem
         "*** YOUR CODE HERE ***"
+        # TODO
+        self.cost_fn = cost_fn
 
     def getStartState(self):
         """
@@ -295,14 +297,14 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return (self.startingPosition, ())
 
     def isGoalState(self, state):
         """
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return len(self.corners) == len(state[1])
 
     def getSuccessors(self, state):
         """
@@ -325,8 +327,20 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
+            # TODO
+            coordinates, corners_visited = state
+            x,y = coordinates
+            dx, dy = Actions.directionToVector(action)
+            next_x, next_y = int(x + dx), int(y + dy)
+            if not self.walls[next_x][next_y]:
+                next_state = (next_x, next_y)
+                if next_state in self.corners and next_state not in corners_visited:
+                    corners_visited = corners_visited + (next_state, )
+                cost = self.cost_fn(next_state)
+                successors.append( ((next_state, corners_visited), action, cost) )
 
         self._expanded += 1 # DO NOT CHANGE
+
         return successors
 
     def getCostOfActions(self, actions):
