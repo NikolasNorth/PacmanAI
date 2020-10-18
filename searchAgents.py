@@ -327,17 +327,16 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
-            # TODO
-            coordinates, corners_visited = state
+            coordinates, visited_corners = state
             x,y = coordinates
             dx, dy = Actions.directionToVector(action)
             next_x, next_y = int(x + dx), int(y + dy)
             if not self.walls[next_x][next_y]:
                 next_state = (next_x, next_y)
-                if next_state in self.corners and next_state not in corners_visited:
-                    corners_visited = corners_visited + (next_state, )
+                if next_state in self.corners and next_state not in visited_corners:
+                    visited_corners = visited_corners + (next_state, )
                 cost = self.cost_fn(next_state)
-                successors.append( ((next_state, corners_visited), action, cost) )
+                successors.append( ((next_state, visited_corners), action, cost) )
 
         self._expanded += 1 # DO NOT CHANGE
 
@@ -374,7 +373,17 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    return 0 # Default to trivial solution
+    if len(state[1]) == 4:
+        return 0
+    unvisited_corners = [corner for corner in problem.corners if corner not in state[1]]
+    min_distance = float("inf")
+    for corner in unvisited_corners:
+        x_1, y_1 = state[0]
+        x_2, y_2 = corner
+        manhattan_distance = abs(x_1 - x_2) + abs(y_1 - y_2)
+        if manhattan_distance < min_distance:
+            min_distance = manhattan_distance
+    return min_distance
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
